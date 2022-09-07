@@ -5,6 +5,14 @@ The code works with the IMEON OS One internal API by quering some JSON endpoints
 
 The main use of this code is to create a prometheus exporter from the IMEON data.
 
+## Installation
+
+```
+git clone https://github.com/besnardjb/imeon_monitor
+cd imeon_monitor
+pip install .
+```
+
 ## Usage
 
 ```
@@ -101,7 +109,7 @@ imeonm -i 192.168.1.99 -s
 ```sh
 # Export data in exporter every 5 seconds
 # Default port is 13371 can be changed with -P
-imeonm -i 127.0.0.1:8080 -p -t 5
+imeonm -i 192.168.1.99 -p -t 5
 ```
 
 ```
