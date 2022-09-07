@@ -14,14 +14,14 @@ class ImeonStatus():
         if not ip:
             raise Exception("An IP must be provided")
 
-        # Main Config 
+        # Main Config
         self._ip = ip
         self._resolution = resolution
 
         # Request cache
         self._last_req = {}
 
-        # User CTX 
+        # User CTX
         self._session_id = None
         self._TSTMD = None
         self._USDT = None
@@ -41,7 +41,7 @@ class ImeonStatus():
         }
 
         loginreq = requests.post(login_data["url_host"], data=login_data)
- 
+
         # Gather context infos
         responsedat = loginreq.json()
         if "TSTMD" in responsedat:
@@ -57,7 +57,7 @@ class ImeonStatus():
         lcookies = requests.utils.dict_from_cookiejar(loginreq.cookies)
         if "session" not in lcookies:
             raise Exception("Failed to login to http://{}/".format(self._ip))
-        
+
         self._session_id = lcookies["session"]
 
     def _check_for_current_data(self, action, args):
@@ -110,16 +110,25 @@ class ImeonStatus():
 
         url = "http://{}/{}".format(self._ip, action)
         session = {"session" : self._session_id}
-        resp = requests.get(url, params=payload, cookies=session)
 
-        if resp.status_code != 200 :
-            # There was an issue try to login again
-            self._login()
-        
-            resp = requests.get(url, params=payload, cookies=session)
+        max_retry = 100
+        req_done = False
 
-            if resp.status_code != 200:
-                raise Exception("Could not request {}".format(action))
+        while not req_done:
+            try:
+                resp = requests.get(url, params=payload, cookies=session)
+
+                if resp.status_code != 200 :
+                    # Wait a little
+                    time.sleep(10)
+                    # There was an issue try to login again
+                    self._login()
+                else:
+                    req_done = True
+            except:
+                max_retry=max_retry-1
+                if max_retry == 0:
+                    raise Exception("Could not get data from {}".format(url))
 
         jsdat = resp.json()
         self._save_in_cache(action, payload, jsdat)
@@ -186,7 +195,7 @@ class PrometeusExporter():
         for k, v in ks.items():
             if not v:
                 continue
-            
+
             if not isinstance(v, numbers.Number):
                 continue
 

@@ -1,0 +1,14 @@
+[Unit]
+Description=Imeon Monitoring Service
+After=prometheus.service
+StartLimitInterval=500
+StartLimitBurst=60
+[Service]
+Type=simple
+Restart=always
+RestartSec=60s
+ExecStart=[WHERE]/imeonm -i [IMEON IP] -p -t 5
+User=prometheus
+Group=prometheus
+[Install]
+WantedBy=multi-user.target
