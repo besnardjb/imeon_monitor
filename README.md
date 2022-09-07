@@ -13,6 +13,26 @@ cd imeon_monitor
 pip install .
 ```
 
+### Systemd Integration
+
+A systemd example unit is given [here](https://raw.githubusercontent.com/besnardjb/imeon_monitor/master/imeonm.service)
+
+```sh
+##!!! FIRST edit the file to you needs particularly the command
+##!!!
+# As root add the unit
+cp imeonm.service /etc/systemd/system/
+# Update units
+systemctl daemon-reload
+# Start the Unit
+systemctl start imeonm
+# Check it runs
+systemctl status imeonm
+# Enable it
+systemctl enable imeonm
+# Debug with 'journalctl -xe -u imeonm'
+```
+
 ## Usage
 
 ```
