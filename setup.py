@@ -11,6 +11,7 @@ setuptools.setup(
     },
     packages=["imeonm"],
     install_requires=[
+        'requests',
         'matplotlib',
         "prometheus-client",
         'wheel'
